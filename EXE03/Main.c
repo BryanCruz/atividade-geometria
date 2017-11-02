@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <math.h>
 
-#ifndef GEOMETRIA
-#define GEOMETRIA
+//#ifndef GEOMETRIA
+//#define GEOMETRIA
 
 struct s_ponto{
   double x;
@@ -51,14 +51,14 @@ vetor roda90(vetor p){
 
 // Calcula distancia
  double distancia (ponto p, ponto q){
-  int dist = sqrt(pot((q.y - p.y), 2)+pot((q.x - p.x), 2));
+  int dist = sqrt(pot((q.y - p.y), 2) + pot((q.x - p.x), 2));
   return dist;
 }
 
 // Calcula o módulo do vetor
 double modulo(vetor u){
-  vetor nulo = {0, 0};
-	return distancia(u, nulo);
+  ponto origem = {0, 0};
+  return distancia(u, origem);
 }
 
 /*  Retorna 1 se o coseno do ^angulo entre os vetores u e v  ́e positivo
@@ -115,4 +115,4 @@ ponto projeta(ponto p, segmento s);
 e devolve 0 caso contr ́ario. */
 int intersecta(triangulo a, triangulo b);
 
-#endif
+//#endif
