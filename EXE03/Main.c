@@ -114,12 +114,28 @@ int dentro(ponto p, triangulo t){
 caso eles se intersectam ou qualquer ponto caso eles n~ao
 se intersectam. */
 ponto cruzamento(segmanto s, segmento t){
+  ponto p;
+
   if(cruza(s, t)){
-    
+    //r_s = s.p1 + (s.p2 - s.p1) * n = a + b*n
+    //r_t = t.p1 + (t.p2 - t.p1) * n = c + d*n
+
+    ponto a = s.p1;
+    vetor b = subtrai(s.p2, s.p1);
+
+    ponto c = t.p1;
+    vetor d = subtrai(t.p2, t.p1);
+
+    double n = (c.x - a.x) / (b.x - d.x);
+
+    p.x = a.x + b.x*n;
+    p.y = a.y + b.y*n;
   }else{
-    ponto origem = {0, 0};
-    return origem;
+    p.x = 0;
+    p.y = 0;
   }
+
+  return p;
 }
 
 
