@@ -91,7 +91,10 @@ int sinal_produto_vetorial(vetor u, vetor v){
 /*  Retorna 1 se p, q e r est~ao em sentido hor ́ario e -1 se for
 anti-hor ́ario. Se os pontos forem colineares devolva 0. */
 int sentido(ponto p, ponto q, ponto r){
+  vetor vetorPQ = subtrai(p, q);
+  vetor vetorPR = subtrai(p, r);
 
+  return sinal_produto_vetorial(vetorPQ, vetorPR);
 }
 
 
@@ -100,19 +103,11 @@ int cruza(segmento s, segmento t){
 
 }
 
-
-
-
-
-
 /*  Retorna 1 se o ponto p est ́a no interior do tri^angulo t.
 Devolve 0 caso contr ́ario. */
 int dentro(ponto p, triangulo t){
 
 }
-
-
-
 
 //  Opcional:
 /*  Devolve a cordenada do ponto em que s e t se intersecta
