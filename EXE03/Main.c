@@ -74,6 +74,19 @@ int sinal_do_coseno(vetor u, vetor v){
 	}
 }
 
+/*sinal de u X v, retorna 1 se for maior que 0,
+-1 se for menor que zero e 0 se u e v são paralelos*/
+int sinal_produto_vetorial(vetor u, vetor v){
+  double valor = u.x*v.y - v.x*u.y;
+
+  if(valor > 0){
+    return 1;
+  }else if(valor == 0){
+    return 0;
+  }else{
+    return -1;
+  }
+}
 
 /*  Retorna 1 se p, q e r est~ao em sentido hor ́ario e -1 se for
 anti-hor ́ario. Se os pontos forem colineares devolva 0. */
