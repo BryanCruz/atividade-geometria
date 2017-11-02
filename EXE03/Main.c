@@ -113,7 +113,14 @@ int dentro(ponto p, triangulo t){
 /*  Devolve a cordenada do ponto em que s e t se intersecta
 caso eles se intersectam ou qualquer ponto caso eles n~ao
 se intersectam. */
-ponto cruzamento(segmanto s, segmento t);
+ponto cruzamento(segmanto s, segmento t){
+  if(cruza(s, t)){
+    
+  }else{
+    ponto origem = {0, 0};
+    return origem;
+  }
+}
 
 
 /*  Calcula o ponto que  ́e a proje ̧c~ao de p no segmento s. */
