@@ -118,9 +118,16 @@ ponto cruzamento(segmanto s, segmento t);
 
 /*  Calcula o ponto que  ́e a proje ̧c~ao de p no segmento s. */
 ponto projeta(ponto p, segmento s){
+  //troca de coordenadas
   vetor v_s = {s.p2.x-s.p1.x, s.p2.y-s.p1.y};
-  double alpha = produto_interno(p, v_s)/(pow(norma(v_s), 2));
 
+  //correcao da troca de coordenadas
+  p.x -= s.p1.x;
+  p.y -= s.p1.y;
+
+  //calculo da projecao
+  double alpha = produto_interno(p, v_s)/(pow(norma(v_s), 2));
+  //volta às coordenadas normais e corrige novamente
   ponto proj = {s.p1.x + alpha*v_s.x, s.p1.y + alpha*v_s.y};
 
   return proj;
