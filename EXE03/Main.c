@@ -55,12 +55,6 @@ vetor roda90(vetor p){
   return dist;
 }
 
-// Calcula o módulo do vetor
-double norma(vetor u){
-  ponto origem = {0, 0};
-  return distancia(u, origem);
-}
-
 /*  Retorna 1 se o coseno do ^angulo entre os vetores u e v  ́e positivo
 retorna -1 se for negativo e 0 se for nulo. */
 int sinal_do_coseno(vetor u, vetor v){
@@ -126,7 +120,7 @@ ponto projeta(ponto p, segmento s){
   p.y -= s.p1.y;
 
   //calculo da projecao
-  double alpha = produto_interno(p, v_s)/(pow(norma(v_s), 2));
+  double alpha = produto_interno(p, v_s)/produto_interno(v_s, v_s);
   //volta às coordenadas normais e corrige novamente
   ponto proj = {s.p1.x + alpha*v_s.x, s.p1.y + alpha*v_s.y};
 
