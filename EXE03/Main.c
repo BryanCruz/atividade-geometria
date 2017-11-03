@@ -51,7 +51,8 @@ vetor roda90(vetor p){
 
 // Calcula distancia
  double distancia (ponto p, ponto q){
-  double dist = sqrt(pow((q.y - p.y), 2) + pow((q.x - p.x), 2));
+  vetor pq = subtrai(p, q);
+  double dist = sqrt(pow(pq.x, 2) + pow(pq.y, 2));
   return dist;
 }
 
