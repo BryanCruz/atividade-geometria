@@ -51,12 +51,12 @@ vetor roda90(vetor p){
 
 // Calcula distancia
  double distancia (ponto p, ponto q){
-  int dist = sqrt(pow((q.y - p.y), 2) + pow((q.x - p.x), 2));
+  double dist = sqrt(pow((q.y - p.y), 2) + pow((q.x - p.x), 2));
   return dist;
 }
 
 // Calcula o módulo do vetor
-double modulo(vetor u){
+double norma(vetor u){
   ponto origem = {0, 0};
   return distancia(u, origem);
 }
@@ -117,7 +117,14 @@ ponto cruzamento(segmanto s, segmento t);
 
 
 /*  Calcula o ponto que  ́e a proje ̧c~ao de p no segmento s. */
-ponto projeta(ponto p, segmento s);
+ponto projeta(ponto p, segmento s){
+  vetor v_s = {s.p2.x-s.p1.x, s.p2.y-s.p1.y};
+  double alpha = produto_interno(p, v_s)/(pow(norma(v_s), 2));
+
+  ponto proj = {s.p1.x + alpha*v_s.x, s.p1.y + alpha*v_s.y};
+
+  return proj;
+}
 
 
 /*  Devolve 1 se os tri^angulos a e b se intersectam
