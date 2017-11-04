@@ -59,10 +59,10 @@ vetor roda90(vetor p){
 /*  Retorna 1 se o coseno do ^angulo entre os vetores u e v  ́e positivo
 retorna -1 se for negativo e 0 se for nulo. */
 int sinal_do_coseno(vetor u, vetor v){
-	double pi = produto_interno(u, v);
-	if(pi > 0){
-		return 1;
-	}else if(pi < 0){
+  double pi = produto_interno(u, v);
+  if(pi > 0){
+    return 1;
+  }else if(pi < 0){
     return -1;
   }else{
     return 0;
