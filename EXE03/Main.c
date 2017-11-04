@@ -201,7 +201,7 @@ int dentro(ponto p, triangulo t){
 caso eles se intersectam ou qualquer ponto caso eles n~ao
 se intersectam. */
 ponto cruzamento(segmento s, segmento t){
-  ponto p;
+  ponto p = {0, 0};
   if(cruza(s, t)){
     //r_s = s.p1 + (s.p2 - s.p1) * n = a + b*n
     //r_t = t.p1 + (t.p2 - t.p1) * n = c + d*n
@@ -211,21 +211,19 @@ ponto cruzamento(segmento s, segmento t){
 
     ponto c = t.p;
     vetor d = subtrai(t.q, t.p);
-
-    double n = (c.x - a.x) / (b.x - d.x);
-
+    double n = 0;
+    if(b.x - d.x != 0){
+      n = (c.x - a.x) / (b.x - d.x);
+    }
     p.x = a.x + b.x*n;
     p.y = a.y + b.y*n;
-  }else{
-    p.x = 0;
-    p.y = 0;
   }
 
   return p;
-/*
+
   //encontra os parâmetros das retas; substitui os parâmetros na eq. paramétrica da reta; acha intersecção.
-  ponto a;
-  if(cruza(s, t) == 1){
+  ponto a = {0, 0};
+  /*if(cruza(s, t) == 1){
     double determinante, parS, parT, x, y;
     determinante = ((t.q.x - t.p.x)*(s.q.y - s.p.y) - (t.q.y - t.p.y)*(s.q.x - s.p.x));
 
@@ -239,7 +237,7 @@ ponto cruzamento(segmento s, segmento t){
   }
 
   return a;
-*/
+  */
 
 
 }
@@ -254,10 +252,13 @@ ponto projeta(ponto p, segmento s){
   p.x -= s.p.x;
   p.y -= s.p.y;
 
-  //calculo da projecao
-  double alpha = produto_interno(p, v_s)/produto_interno(v_s, v_s);
-  //volta às coordenadas normais e corrige novamente
-  ponto proj = {s.p.x + alpha*v_s.x, s.p.y + alpha*v_s.y};
+  double alpha = 0;
+  //calculo da projecao (proj = alpha*v_s)
+  if(produto_interno(v_s, v_s) != 0){
+    alpha = produto_interno(p, v_s)/produto_interno(v_s, v_s);
+  }
+  //corrige novamente para voltar às coordenadas originais
+  ponto proj = {s.p.x + alpha*(v_s.x), s.p.y + alpha*(v_s.y)};
 
   return proj;
 }
