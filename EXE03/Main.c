@@ -101,10 +101,6 @@ int cruza(segmento s, segmento t){
 	int sent3 = sentido(t.p, s.p, s.q);
 	int sent4 = sentido(t.q, s.p, s.q);
 
-	//s.p = 0,1
-	//s.q = 1,1.5
-	//t.p = 0,2
-	//t.q = 1,4
   int cr = 0;
   if(sent1 != 0 && sent2 != 0){
     if(sent1 != sent2 && sent3 != sent4){
@@ -176,20 +172,23 @@ ponto cruzamento(segmento s, segmento t){
   //r_s = s.p + (s.q - s.p) * n = a + b*n
   //r_t = t.p + (t.q - t.p) * n = c + d*n
 
-  ponto a = s.p;
-  vetor b = subtrai(s.q, s.p);
+	if(cruza){
+	  ponto a = s.p;
+	  vetor b = subtrai(s.q, s.p);
 
-  ponto c = t.p;
-  vetor d = subtrai(t.q, t.p);
-  double n = 0;
-  if(b.x != d.x){
-    n = (c.x - a.x) / (b.x - d.x);
-  }else if(b.y != d.y){
-		n = (c.y - a.y) / (b.y - d.y);
+	  ponto c = t.p;
+	  vetor d = subtrai(t.q, t.p);
+
+	  double n = 0;
+	  if(b.x != d.x){
+	    n = (c.x - a.x) / (b.x - d.x);
+	  }else if(b.y != d.y){
+			n = (c.y - a.y) / (b.y - d.y);
+		}
+
+	  p.x = a.x + b.x*n;
+	  p.y = a.y + b.y*n;
 	}
-  p.x = a.x + b.x*n;
-  p.y = a.y + b.y*n;
-
   return p;
 
   //encontra os parâmetros das retas; substitui os parâmetros na eq. paramétrica da reta; acha intersecção.
@@ -209,8 +208,6 @@ ponto cruzamento(segmento s, segmento t){
 
   return a;
   */
-
-
 }
 
 
