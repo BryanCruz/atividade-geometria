@@ -96,25 +96,41 @@ int sentido(ponto p, ponto q, ponto r){
 //  Retorna 1 se os segmentos se cruzam e 0 caso contr ́ario.
 int cruza(segmento s, segmento t){
   int sent1 = sentido(s.p, t.p, t.q);
-  int sent2 = sentido(s.q, t.p, t.q);
+	int sent2 = sentido(s.q, t.p, t.q);
 
+	int sent3 = sentido(t.p, s.p, s.q);
+	int sent4 = sentido(t.q, s.p, s.q);
+
+	//s.p = 0,1
+	//s.q = 1,1.5
+	//t.p = 0,2
+	//t.q = 1,4
   int cr = 0;
   if(sent1 != 0 && sent2 != 0){
-    if(sent1 != sent2){
+    if(sent1 != sent2 && sent3 != sent4){
       cr = 1;
     }
   }else{
-    double minT, maxT;
+    double xminT, xmaxT;
     if(t.p.x < t.q.x){
-      minT = t.p.x;
-      maxT = t.q.x;
+      xminT = t.p.x;
+      xmaxT = t.q.x;
     }else{
-      minT = t.q.x;
-      maxT = t.p.x;
+      xminT = t.q.x;
+      xmaxT = t.p.x;
+    }
+
+		double yminT, ymaxT;
+    if(t.p.y < t.q.y){
+      yminT = t.p.y;
+      ymaxT = t.q.y;
+    }else{
+      yminT = t.q.y;
+      ymaxT = t.p.y;
     }
 
     if(sent1 == sent2){ // as 2 retas são colineares
-      if((minT <= s.p.x && s.p.x <= maxT) || (minT <= s.q.x && s.q.x <= maxT)){
+      if((xminT <= s.p.x && s.p.x <= xmaxT) || (xminT <= s.q.x && s.q.x <= xmaxT)){
         cr = 1;
       }
     }else{
@@ -126,7 +142,7 @@ int cruza(segmento s, segmento t){
         col = s.q;
       }
 
-      if(minT <= col.x && col.x <= maxT){
+      if(xminT <= col.x && col.x <= xmaxT && yminT <= col.y && col.y <= ymaxT){
         cr = 1;
       }
     }
@@ -148,82 +164,37 @@ int dentro(ponto p, triangulo t){
   }
 
   return sent;
-
-  /*
-  //definir beta, pontos máximo e mínimo
-  int xmax, xmin, ymax, ymin, b;
-  xmax = t.p.x;
-  xmin = t.p.x;
-  ymax = t.p.y;
-  ymin = t.p.y;
-
-  if(t.q.x > xmax){
-      xmax = t.q.x;
-  }
-  else if(t.q.x < xmin){
-    xmin = t.q.x;
-  }
-  if(t.r.x > xmax){
-      xmax = t.r.x;
-  }
-  else if(t.r.x < xmin){
-    xmin = t.r.x;
-  }
-  if(t.q.y > ymax){
-      ymax = t.q.y;
-  }
-  else if(t.q.y < ymin){
-    ymin = t.q.y;
-  }
-  if(t.r.y > ymax){
-      ymax = t.r.y;
-  }
-  else if(t.r.y < ymin){
-    ymin = t.r.y;
-  }
-
-  //beta = ya*(xc-xb)+yb*(xa-xc)+yc*(xb-xa);
-  b = (t.p.y)*(t.r.x - t.q.x)+(t.q.y)*(t.p.x - t.r.x)+(t.r.y)*(t.q.x - t.p.x);
-
-  //definir se o ponto está dentro do triângulo:
-  if(p.x > xmax || p.x < xmin || p.y < ymax || p.y < ymin ){
-    return 0;
-
-  }else{
-    return 1;
-  }*/
-
-
 }
 
 //  Opcional:
 /*  Devolve a cordenada do ponto em que s e t se intersecta
 caso eles se intersectam ou qualquer ponto caso eles n~ao
 se intersectam. */
+
 ponto cruzamento(segmento s, segmento t){
-  ponto p = {0, 0};
-  if(cruza(s, t)){
-    //r_s = s.p1 + (s.p2 - s.p1) * n = a + b*n
-    //r_t = t.p1 + (t.p2 - t.p1) * n = c + d*n
+  ponto p;
+  //r_s = s.p + (s.q - s.p) * n = a + b*n
+  //r_t = t.p + (t.q - t.p) * n = c + d*n
 
-    ponto a = s.p;
-    vetor b = subtrai(s.q, s.p);
+  ponto a = s.p;
+  vetor b = subtrai(s.q, s.p);
 
-    ponto c = t.p;
-    vetor d = subtrai(t.q, t.p);
-    double n = 0;
-    if(b.x - d.x != 0){
-      n = (c.x - a.x) / (b.x - d.x);
-    }
-    p.x = a.x + b.x*n;
-    p.y = a.y + b.y*n;
-  }
+  ponto c = t.p;
+  vetor d = subtrai(t.q, t.p);
+  double n = 0;
+  if(b.x != d.x){
+    n = (c.x - a.x) / (b.x - d.x);
+  }else if(b.y != d.y){
+		n = (c.y - a.y) / (b.y - d.y);
+	}
+  p.x = a.x + b.x*n;
+  p.y = a.y + b.y*n;
 
   return p;
 
   //encontra os parâmetros das retas; substitui os parâmetros na eq. paramétrica da reta; acha intersecção.
-  ponto a = {0, 0};
-  /*if(cruza(s, t) == 1){
+  /*ponto a = {0, 0};
+  if(cruza(s, t) == 1){
     double determinante, parS, parT, x, y;
     determinante = ((t.q.x - t.p.x)*(s.q.y - s.p.y) - (t.q.y - t.p.y)*(s.q.x - s.p.x));
 
@@ -249,8 +220,8 @@ ponto projeta(ponto p, segmento s){
   vetor v_s = subtrai(s.q, s.p);
 
   //correcao da troca de coordenadas
-  p.x -= s.p.x;
-  p.y -= s.p.y;
+  p.x = p.x - s.p.x;
+  p.y = p.y - s.p.y;
 
   double alpha = 0;
   //calculo da projecao (proj = alpha*v_s)
@@ -259,9 +230,9 @@ ponto projeta(ponto p, segmento s){
   }
   //corrige novamente para voltar às coordenadas originais
   ponto proj = {s.p.x + alpha*(v_s.x), s.p.y + alpha*(v_s.y)};
-
   return proj;
 }
+
 
 
 /*  Devolve 1 se os tri^angulos a e b se intersectam
@@ -287,5 +258,19 @@ int intersecta(triangulo a, triangulo b){
     return 0;
   }
 }
+/*
+int main(){
+	ponto p1 = {0, 1};
+	ponto p2 = {1, 1.5};
+
+	ponto q1 = {0, 2};
+	ponto q2 = {-1, 0};
+
+	segmento s1 = {p1, p2};
+	segmento s2 = {q1, q2};
+
+	printf("%d\n", cruza(s1, s2));
+	return 0;
+}*/
 
 //#endif
