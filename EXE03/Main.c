@@ -160,6 +160,7 @@ int dentro(ponto p, triangulo t){
 caso eles se intersectam ou qualquer ponto caso eles n~ao
 se intersectam. */
 ponto cruzamento(segmento s, segmento t){
+/*
   //encontra os parâmetros das retas; substitui os parâmetros na eq. paramétrica da reta; acha intersecção.
   ponto a;
   if(cruza(s, t) == 1){
@@ -176,6 +177,29 @@ ponto cruzamento(segmento s, segmento t){
   }
 
   return a;
+*/
+
+ponto p;
+  if(cruza(s, t)){
+    //r_s = s.p1 + (s.p2 - s.p1) * n = a + b*n
+    //r_t = t.p1 + (t.p2 - t.p1) * n = c + d*n
+
+    ponto a = s.p;
+    vetor b = subtrai(s.q, s.p);
+
+    ponto c = t.p;
+    vetor d = subtrai(t.q, t.p);
+
+    double n = (c.x - a.x) / (b.x - d.x);
+
+    p.x = a.x + b.x*n;
+    p.y = a.y + b.y*n;
+  }else{
+    p.x = 0;
+    p.y = 0;
+  }
+
+  return p;
 }
 
 
