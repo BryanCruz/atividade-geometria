@@ -69,18 +69,9 @@ int sinal_do_coseno(vetor u, vetor v){
   }
 }
 
-/*sinal de u X v, retorna 1 se for maior que 0,
--1 se for menor que zero e 0 se u e v são paralelos*/
-int sinal_produto_vetorial(vetor u, vetor v){
-  double valor = u.x*v.y - v.x*u.y;
-
-  if(valor > 0){
-    return -1;
-  }else if(valor == 0){
-    return 0;
-  }else{
-    return 1;
-  }
+/*valor numérico de (u x v)*/
+double produto_vetorial(vetor u, vetor v){
+  return u.x*v.y - v.x*u.y;
 }
 
 /*  Retorna 1 se p, q e r est~ao em sentido hor ́ario e -1 se for
@@ -89,7 +80,14 @@ int sentido(ponto p, ponto q, ponto r){
   vetor vetorPQ = subtrai(q, p);
   vetor vetorPR = subtrai(r, p);
 
-  return sinal_produto_vetorial(vetorPQ, vetorPR);
+  double pv = produto_vetorial(vetorPQ, vetorPR);
+	if(pv > 0){
+		return -1;
+	}else if(pv < 0){
+		return 1;
+	}else{
+		return 0;
+	}
 }
 
 
@@ -125,56 +123,48 @@ int cruza(segmento s, segmento t){
 /*  Retorna 1 se o ponto p est ́a no interior do tri^angulo t.
 Devolve 0 caso contr ́ario. */
 int dentro(ponto p, triangulo t){
-
   return (sentido(p, t.p, t.q) == sentido(p, t.q, t.r)) && (sentido(p, t.q, t.r) == sentido(p, t.r, t.p));
 }
 
 //  Opcional:
 /*  Devolve a cordenada do ponto em que s e t se intersecta
-caso eles se intersectam ou qualquer ponto caso eles n~ao
+caso eles se intersectam ou qualquer ponto caso eles nao
 se intersectam. */
 
 ponto cruzamento(segmento s, segmento t){
-  ponto p;
-  //r_s = s.p + (s.q - s.p) * n = a + b*n
-  //r_t = t.p + (t.q - t.p) * n = c + d*n
+	ponto p = {0, 0};
 
-	if(cruza){
+	if(cruza(s, t)){
+		//encontra os parâmetros das retas; substitui os parâmetros na eq. paramétrica da reta; acha intersecção.
+		//r_s = s.p + (s.q - s.p)*n1 = a + b*n1
+		//r_t = t.p + (t.q - t.p)*n1 = c + d*n2
+
 	  ponto a = s.p;
 	  vetor b = subtrai(s.q, s.p);
 
 	  ponto c = t.p;
 	  vetor d = subtrai(t.q, t.p);
 
-	  double n = 0;
-	  if(b.x != d.x){
-	    n = (c.x - a.x) / (b.x - d.x);
-	  }else if(b.y != d.y){
-			n = (c.y - a.y) / (b.y - d.y);
+		if(produto_vetorial(d, b) != 0){
+			//parametro da reta s
+			double n1 = produto_vetorial(d, subtrai(c, a)) / produto_vetorial(d, b);
+
+			//substituindo n1 para encontrar o ponto:
+			p.x = a.x + n1*b.x;
+			p.y = a.y + n1*b.y;
+		}else{
+			if((s.p.x == t.p.x && s.p.y == t.p.y) || (s.p.x == t.q.x && s.p.y == t.q.y)){
+				p.x = s.p.x;
+				p.y = s.p.y;
+			}else if((s.q.x == t.p.x && s.q.y == t.p.y) || (s.q.x == t.q.x && s.q.y == t.q.y)){
+				p.x = s.q.x;
+				p.y = s.q.y;
+			}
 		}
 
-	  p.x = a.x + b.x*n;
-	  p.y = a.y + b.y*n;
 	}
+	
   return p;
-
-  //encontra os parâmetros das retas; substitui os parâmetros na eq. paramétrica da reta; acha intersecção.
-  /*ponto a = {0, 0};
-  if(cruza(s, t) == 1){
-    double determinante, parS, parT, x, y;
-    determinante = ((t.q.x - t.p.x)*(s.q.y - s.p.y) - (t.q.y - t.p.y)*(s.q.x - s.p.x));
-
-    //parâmetros de S e T
-    parS = ( (t.q.x - t.p.x)*(t.p.y - s.p.y) - (t.q.y - t.p.y)*(t.p.x - s.p.x) )/determinante;
-    parT = ( (s.q.x - s.p.x)*(t.p.y - s.p.y) - (s.q.y - s.p.y)*(t.p.x - s.p.x) )/determinante;
-
-    //Substituindo S ou T e encontrando o ponto:
-    a.x = (s.p.x) + (s.q.x - s.p.x)*parS;
-    a.y = (s.p.y) + (s.q.y - s.p.y)*parS;
-  }
-
-  return a;
-  */
 }
 
 
@@ -203,12 +193,12 @@ ponto projeta(ponto p, segmento s){
 e devolve 0 caso contr ́ario. */
 int intersecta(triangulo a, triangulo b){
 	segmento aPQ = {a.p, a.q};
-	segmento aPR = {a.p, a.r};
-	segmento aQR = {a.q, a.r};
+	segmento aPR = {a.q, a.r};
+	segmento aQR = {a.r, a.p};
 
 	segmento bPQ = {b.p, b.q};
-	segmento bPR = {b.p, b.r};
-	segmento bQR = {b.q, b.r};
+	segmento bPR = {b.q, b.r};
+	segmento bQR = {b.r, b.p};
 
 	segmento segA[3] = {aPQ, aPR, aQR};
 	segmento segB[3] = {bPQ, bPR, bQR};
@@ -225,16 +215,12 @@ int intersecta(triangulo a, triangulo b){
 }
 /*
 int main(){
-	ponto p1 = {0, 1};
-	ponto p2 = {1, 1.5};
+	segmento s1 = {{0, 2}, {-2, -2}};
+	segmento s2 = {{-2, -5}, {1, 10}};
 
-	ponto q1 = {0, 2};
-	ponto q2 = {-1, 0};
+	ponto p = cruzamento(s1,s2);
 
-	segmento s1 = {p1, p2};
-	segmento s2 = {q1, q2};
-
-	printf("%d\n", cruza(s1, s2));
+	printf("(%.2lf, %.2lf)\n", p.x, p.y);
 	return 0;
 }*/
 
