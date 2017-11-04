@@ -44,7 +44,7 @@ de um angulo de 90 graus (no sentido anti-horario). */
 vetor roda90(vetor p){
 	double aux = p.y;
 	p.y = p.x;
-	p.x = -p.y;
+	p.x = -aux;
 
 	return p;
 }
@@ -59,14 +59,14 @@ vetor roda90(vetor p){
 /*  Retorna 1 se o coseno do ^angulo entre os vetores u e v  ́e positivo
 retorna -1 se for negativo e 0 se for nulo. */
 int sinal_do_coseno(vetor u, vetor v){
-	int pi = produto_interno(u, v);
+	double pi = produto_interno(u, v);
 	if(pi > 0){
 		return 1;
-	}else if(pi == 0){
-		return 0;
-	}else{
-		return -1;
-	}
+	}else if(pi < 0){
+    return -1;
+  }else{
+    return 0;
+  }
 }
 
 /*sinal de u X v, retorna 1 se for maior que 0,
@@ -75,19 +75,19 @@ int sinal_produto_vetorial(vetor u, vetor v){
   double valor = u.x*v.y - v.x*u.y;
 
   if(valor > 0){
-    return 1;
+    return -1;
   }else if(valor == 0){
     return 0;
   }else{
-    return -1;
+    return 1;
   }
 }
 
 /*  Retorna 1 se p, q e r est~ao em sentido hor ́ario e -1 se for
 anti-hor ́ario. Se os pontos forem colineares devolva 0. */
 int sentido(ponto p, ponto q, ponto r){
-  vetor vetorPQ = subtrai(p, q);
-  vetor vetorPR = subtrai(p, r);
+  vetor vetorPQ = subtrai(q, p);
+  vetor vetorPR = subtrai(r, p);
 
   return sinal_produto_vetorial(vetorPQ, vetorPR);
 }
@@ -95,20 +95,61 @@ int sentido(ponto p, ponto q, ponto r){
 
 //  Retorna 1 se os segmentos se cruzam e 0 caso contr ́ario.
 int cruza(segmento s, segmento t){
-  double determinante;
-  determinante = ((t.q.x - t.p.x)*(s.q.y - s.p.y) - (t.q.y - t.p.y)*(s.q.x - s.p.x));
+  int sent1 = sentido(s.p, t.p, t.q);
+  int sent2 = sentido(s.q, t.p, t.q);
 
-  if(determinante == 0.0){
-    return 0;
+  int cr = 0;
+  if(sent1 != 0 && sent2 != 0){
+    if(sent1 != sent2){
+      cr = 1;
+    }
+  }else{
+    double minT, maxT;
+    if(t.p.x < t.q.x){
+      minT = t.p.x;
+      maxT = t.q.x;
+    }else{
+      minT = t.q.x;
+      maxT = t.p.x;
+    }
+
+    if(sent1 == sent2){ // as 2 retas são colineares
+      if((minT <= s.p.x && s.p.x <= maxT) || (minT <= s.q.x && s.q.x <= maxT)){
+        cr = 1;
+      }
+    }else{
+      ponto col; //ponto colinear de s no segmento t
+
+      if(sent1 == 0){
+        col = s.p;
+      }else{
+        col = s.q;
+      }
+
+      if(minT <= col.x && col.x <= maxT){
+        cr = 1;
+      }
+    }
   }
-  else{
-    return 1;
-  }
+
+
+
+  return cr;
 }
 
 /*  Retorna 1 se o ponto p est ́a no interior do tri^angulo t.
 Devolve 0 caso contr ́ario. */
 int dentro(ponto p, triangulo t){
+  int sent = 0;
+  if(sentido(p, t.p, t.q) == sentido(p, t.q, t.r)){
+    if(sentido(p, t.q, t.r) == sentido(p, t.r, t.p)){
+      sent = 1;
+    }
+  }
+
+  return sent;
+
+  /*
   //definir beta, pontos máximo e mínimo
   int xmax, xmin, ymax, ymin, b;
   xmax = t.p.x;
@@ -150,7 +191,7 @@ int dentro(ponto p, triangulo t){
 
   }else{
     return 1;
-  }
+  }*/
 
 
 }
@@ -160,26 +201,7 @@ int dentro(ponto p, triangulo t){
 caso eles se intersectam ou qualquer ponto caso eles n~ao
 se intersectam. */
 ponto cruzamento(segmento s, segmento t){
-/*
-  //encontra os parâmetros das retas; substitui os parâmetros na eq. paramétrica da reta; acha intersecção.
-  ponto a;
-  if(cruza(s, t) == 1){
-    double determinante, parS, parT, x, y;
-    determinante = ((t.q.x - t.p.x)*(s.q.y - s.p.y) - (t.q.y - t.p.y)*(s.q.x - s.p.x));
-
-    //parâmetros de S e T
-    parS = ( (t.q.x - t.p.x)*(t.p.y - s.p.y) - (t.q.y - t.p.y)*(t.p.x - s.p.x) )/determinante;
-    parT = ( (s.q.x - s.p.x)*(t.p.y - s.p.y) - (s.q.y - s.p.y)*(t.p.x - s.p.x) )/determinante;
-
-    //Substituindo S ou T e encontrando o ponto:
-    a.x = (s.p.x) + (s.q.x - s.p.x)*parS;
-    a.y = (s.p.y) + (s.q.y - s.p.y)*parS;
-  }
-
-  return a;
-*/
-
-ponto p;
+  ponto p;
   if(cruza(s, t)){
     //r_s = s.p1 + (s.p2 - s.p1) * n = a + b*n
     //r_t = t.p1 + (t.p2 - t.p1) * n = c + d*n
@@ -200,13 +222,33 @@ ponto p;
   }
 
   return p;
+/*
+  //encontra os parâmetros das retas; substitui os parâmetros na eq. paramétrica da reta; acha intersecção.
+  ponto a;
+  if(cruza(s, t) == 1){
+    double determinante, parS, parT, x, y;
+    determinante = ((t.q.x - t.p.x)*(s.q.y - s.p.y) - (t.q.y - t.p.y)*(s.q.x - s.p.x));
+
+    //parâmetros de S e T
+    parS = ( (t.q.x - t.p.x)*(t.p.y - s.p.y) - (t.q.y - t.p.y)*(t.p.x - s.p.x) )/determinante;
+    parT = ( (s.q.x - s.p.x)*(t.p.y - s.p.y) - (s.q.y - s.p.y)*(t.p.x - s.p.x) )/determinante;
+
+    //Substituindo S ou T e encontrando o ponto:
+    a.x = (s.p.x) + (s.q.x - s.p.x)*parS;
+    a.y = (s.p.y) + (s.q.y - s.p.y)*parS;
+  }
+
+  return a;
+*/
+
+
 }
 
 
 /*  Calcula o ponto que  ́e a proje ̧c~ao de p no segmento s. */
 ponto projeta(ponto p, segmento s){
   //troca de coordenadas
-  vetor v_s = {s.q.x-s.p.x, s.q.y-s.p.y};
+  vetor v_s = subtrai(s.q, s.p);
 
   //correcao da troca de coordenadas
   p.x -= s.p.x;
