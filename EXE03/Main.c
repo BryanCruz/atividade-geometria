@@ -163,7 +163,7 @@ ponto cruzamento(segmento s, segmento t){
 		}
 
 	}
-	
+
   return p;
 }
 
