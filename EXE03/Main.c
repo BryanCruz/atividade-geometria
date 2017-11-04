@@ -154,14 +154,8 @@ int cruza(segmento s, segmento t){
 /*  Retorna 1 se o ponto p est ́a no interior do tri^angulo t.
 Devolve 0 caso contr ́ario. */
 int dentro(ponto p, triangulo t){
-  int sent = 0;
-  if(sentido(p, t.p, t.q) == sentido(p, t.q, t.r)){
-    if(sentido(p, t.q, t.r) == sentido(p, t.r, t.p)){
-      sent = 1;
-    }
-  }
 
-  return sent;
+  return (sentido(p, t.p, t.q) == sentido(p, t.q, t.r)) && (sentido(p, t.q, t.r) == sentido(p, t.r, t.p));
 }
 
 //  Opcional:
