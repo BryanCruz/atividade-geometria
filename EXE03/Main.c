@@ -5,10 +5,10 @@
 #include <stdio.h>
 #include <math.h>
 
-#ifndef GEOMETRIA
-#define GEOMETRIA
+//#ifndef GEOMETRIA
+//#define GEOMETRIA
 
-struct s_ponto{
+/*struct s_ponto{
   double x;
   double y;
 };
@@ -24,7 +24,7 @@ struct s_triangulo{
    ponto p1, p2, p3;
 };
 typedef struct s_triangulo triangulo;
-
+*/
 //  Calcula o produto interno <u,v>
 double produto_interno(vetor p, vetor q) {
 	return p.x*q.x + p.y*q.y;
@@ -96,7 +96,7 @@ int sentido(ponto p, ponto q, ponto r){
 //  Retorna 1 se os segmentos se cruzam e 0 caso contr ́ario.
 int cruza(segmento s, segmento t){
   double determinante;
-  determinante = ((t.p2.x - t.p1.x)*(s.p2.y - s.p1.y) - (t.p2.y - t.p1.y)*(s.p2.x - s.p1.x));
+  determinante = ((t.q.x - t.p.x)*(s.q.y - s.p.y) - (t.q.y - t.p.y)*(s.q.x - s.p.x));
 
   if(determinante == 0.0){
     return 0;
@@ -111,44 +111,44 @@ Devolve 0 caso contr ́ario. */
 int dentro(ponto p, triangulo t){
   //definir beta, pontos máximo e mínimo
   int xmax, xmin, ymax, ymin, b;
-  xmax = t.p1.x;
-  xmin = t.p1.x;
-  ymax = t.p1.y;
-  ymin = t.p1.y;
+  xmax = t.p.x;
+  xmin = t.p.x;
+  ymax = t.p.y;
+  ymin = t.p.y;
 
-  if(t.p2.x > xmax){
-      xmax = t.p2.x;
+  if(t.q.x > xmax){
+      xmax = t.q.x;
   }
-  else if(t.p2.x < xmin){
-    xmin = t.p2.x;
+  else if(t.q.x < xmin){
+    xmin = t.q.x;
   }
-  if(t.p3.x > xmax){
-      xmax = t.p3.x;
+  if(t.r.x > xmax){
+      xmax = t.r.x;
   }
-  else if(t.p3.x < xmin){
-    xmin = t.p3.x;
+  else if(t.r.x < xmin){
+    xmin = t.r.x;
   }
-  if(t.p2.y > ymax){
-      ymax = t.p2.y;
+  if(t.q.y > ymax){
+      ymax = t.q.y;
   }
-  else if(t.p2.y < ymin){
-    ymin = t.p2.y;
+  else if(t.q.y < ymin){
+    ymin = t.q.y;
   }
-  if(t.p3.y > ymax){
-      ymax = t.p3.y;
+  if(t.r.y > ymax){
+      ymax = t.r.y;
   }
-  else if(t.p3.y < ymin){
-    ymin = t.p3.y;
+  else if(t.r.y < ymin){
+    ymin = t.r.y;
   }
 
   //beta = ya*(xc-xb)+yb*(xa-xc)+yc*(xb-xa);
-  b = (t.p1.y)*(t.p3.x - t.p2.x)+(t.p2.y)*(t.p1.x - t.p3.x)+(t.p3.y)*(t.p2.x - t.p1.x);
+  b = (t.p.y)*(t.r.x - t.q.x)+(t.q.y)*(t.p.x - t.r.x)+(t.r.y)*(t.q.x - t.p.x);
 
   //definir se o ponto está dentro do triângulo:
   if(p.x > xmax || p.x < xmin || p.y < ymax || p.y < ymin ){
     return 0;
 
-  else{
+  }else{
     return 1;
   }
 
@@ -159,20 +159,20 @@ int dentro(ponto p, triangulo t){
 /*  Devolve a cordenada do ponto em que s e t se intersecta
 caso eles se intersectam ou qualquer ponto caso eles n~ao
 se intersectam. */
-ponto cruzamento(segmanto s, segmento t){
+ponto cruzamento(segmento s, segmento t){
   //encontra os parâmetros das retas; substitui os parâmetros na eq. paramétrica da reta; acha intersecção.
   ponto a;
   if(cruza(s, t) == 1){
     double determinante, parS, parT, x, y;
-    determinante = ((t.p2.x - t.p1.x)*(s.p2.y - s.p1.y) - (t.p2.y - t.p1.y)*(s.p2.x - s.p1.x));
+    determinante = ((t.q.x - t.p.x)*(s.q.y - s.p.y) - (t.q.y - t.p.y)*(s.q.x - s.p.x));
 
     //parâmetros de S e T
-    parS = ( (t.p2.x - t.p1.x)*(t.p1.y - s.p1.y) - (t.p2.y - t.p1.y)*(t.p1.x - s.p1.x) )/determinante;
-    parT = ( (s.p2.x - s.p1.x)*(t.p1.y - s.p1.y) - (s.p2.y - s.p1.y)*(t.p1.x - s.p1.x) )/determinante;
+    parS = ( (t.q.x - t.p.x)*(t.p.y - s.p.y) - (t.q.y - t.p.y)*(t.p.x - s.p.x) )/determinante;
+    parT = ( (s.q.x - s.p.x)*(t.p.y - s.p.y) - (s.q.y - s.p.y)*(t.p.x - s.p.x) )/determinante;
 
     //Substituindo S ou T e encontrando o ponto:
-    a.x = (s.p1.x) + (s.p2.x - s.p1.x)*parS;
-    a.y = (s.p1.y) + (s.p2.y - s.p1.y)*parS;
+    a.x = (s.p.x) + (s.q.x - s.p.x)*parS;
+    a.y = (s.p.y) + (s.q.y - s.p.y)*parS;
   }
 
   return a;
@@ -182,16 +182,16 @@ ponto cruzamento(segmanto s, segmento t){
 /*  Calcula o ponto que  ́e a proje ̧c~ao de p no segmento s. */
 ponto projeta(ponto p, segmento s){
   //troca de coordenadas
-  vetor v_s = {s.p2.x-s.p1.x, s.p2.y-s.p1.y};
+  vetor v_s = {s.q.x-s.p.x, s.q.y-s.p.y};
 
   //correcao da troca de coordenadas
-  p.x -= s.p1.x;
-  p.y -= s.p1.y;
+  p.x -= s.p.x;
+  p.y -= s.p.y;
 
   //calculo da projecao
   double alpha = produto_interno(p, v_s)/produto_interno(v_s, v_s);
   //volta às coordenadas normais e corrige novamente
-  ponto proj = {s.p1.x + alpha*v_s.x, s.p1.y + alpha*v_s.y};
+  ponto proj = {s.p.x + alpha*v_s.x, s.p.y + alpha*v_s.y};
 
   return proj;
 }
@@ -200,13 +200,12 @@ ponto projeta(ponto p, segmento s){
 /*  Devolve 1 se os tri^angulos a e b se intersectam
 e devolve 0 caso contr ́ario. */
 int intersecta(triangulo a, triangulo b){
-  segmento aPQ, aPR, aQR, bPQ, bPR, bQR;
-  aPQ = (a.p1.x, a.p1.y, a.p2.x, a.p2.y);
-  aPR = (a.p1.x, a.p1.y, a.p3.x, a.p3.y);
-  aQR = (a.p2.x, a.p2.y, a.p3.x, a.p3.y);
-  bPQ = (b.p1.x, a.p1.y, a.p2.x, a.p2.y);
-  bPR = (b.p1.x, b.p1.y, b.p3.x, b.p3.y);
-  bQR = (b.p2.x, b.p2.y, b.p3.x, b.p3.y);
+  segmento aPQ = {a.p.x, a.p.y, a.q.x, a.q.y};
+  segmento aPR = {a.p.x, a.p.y, a.r.x, a.r.y};
+  segmento aQR = {a.q.x, a.q.y, a.r.x, a.r.y};
+  segmento bPQ = {b.p.x, a.p.y, a.q.x, a.q.y};
+  segmento bPR = {b.p.x, b.p.y, b.r.x, b.r.y};
+  segmento bQR = {b.q.x, b.q.y, b.r.x, b.r.y};
 
   if(cruza(aPQ, bPQ) == 1 || cruza(aPQ, bPR) == 1 || cruza(aPQ, bQR) == 1 ){
     return 1;
@@ -222,4 +221,4 @@ int intersecta(triangulo a, triangulo b){
   }
 }
 
-#endif
+//#endif
