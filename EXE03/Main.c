@@ -97,58 +97,29 @@ int sentido(ponto p, ponto q, ponto r){
 int cruza(segmento s, segmento t){
 
 	int sent1 = sentido(s.p, t.p, t.q);
- int sent2 = sentido(s.q, t.p, t.q);
+	int sent2 = sentido(s.q, t.p, t.q);
 
- int sent3 = sentido(t.p, s.p, s.q);
- int sent4 = sentido(t.q, s.p, s.q);
+	int sent3 = sentido(t.p, s.p, s.q);
+	int sent4 = sentido(t.q, s.p, s.q);
 
- int cr = 0;
- if(sent1 != 0 && sent2 != 0){
-	 if(sent1 != sent2 && sent3 != sent4){
-		 cr = 1;
-	 }
- }else{
-	 double xminT, xmaxT;
-	 if(t.p.x < t.q.x){
-		 xminT = t.p.x;
-		 xmaxT = t.q.x;
-	 }else{
-		 xminT = t.q.x;
-		 xmaxT = t.p.x;
-	 }
+	int cr = 0;
+	if(sent1*sent2 == -1 && sent3*sent4 == -1){
+		//se intersectam
+		cr = 1;
+	}else{
+		if((sent1*sent2 == -1 && sent3*sent4 == 0) || (sent1*sent2 == 0 && sent3*sent4 == -1)){
+			//um dos pontos de um segmento faz parte do outro segmento
+			cr = 1;
+		}else{
+			if((s.p.x == t.p.x && s.p.y == t.p.y) || (s.p.x == t.q.x && s.p.y == t.q.y)
+			|| (s.q.x == t.p.x && s.q.y == t.p.y) || (s.q.x == t.q.x && s.q.y == t.q.y)){
+				//os pontos do segmento coincidem
+				cr = 1;
+			}
+		}
+	}
 
-	 double yminT, ymaxT;
-	 if(t.p.y < t.q.y){
-		 yminT = t.p.y;
-		 ymaxT = t.q.y;
-	 }else{
-		 yminT = t.q.y;
-		 ymaxT = t.p.y;
-	 }
-
-	 if(sent1 == sent2){ // as 2 retas são colineares
-		 if((xminT <= s.p.x && s.p.x <= xmaxT) || (xminT <= s.q.x && s.q.x <= xmaxT)){
-			 cr = 1;
-		 }
-	 }else{
-		 ponto col; //ponto colinear de s no segmento t
-
-		 if(sent1 == 0){
-			 col = s.p;
-		 }else{
-			 col = s.q;
-		 }
-
-		 if(xminT <= col.x && col.x <= xmaxT && yminT <= col.y && col.y <= ymaxT){
-			 cr = 1;
-		 }
-	 }
- }
-
-
-
- return cr;
-
+	return cr;
 }
 
 /*  Retorna 1 se o ponto p est ́a no interior do tri^angulo t.
