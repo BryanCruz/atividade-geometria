@@ -95,58 +95,60 @@ int sentido(ponto p, ponto q, ponto r){
 
 //  Retorna 1 se os segmentos se cruzam e 0 caso contr ́ario.
 int cruza(segmento s, segmento t){
-  int sent1 = sentido(s.p, t.p, t.q);
-	int sent2 = sentido(s.q, t.p, t.q);
 
-	int sent3 = sentido(t.p, s.p, s.q);
-	int sent4 = sentido(t.q, s.p, s.q);
+	int sent1 = sentido(s.p, t.p, t.q);
+ int sent2 = sentido(s.q, t.p, t.q);
 
-  int cr = 0;
-  if(sent1 != 0 && sent2 != 0){
-    if(sent1 != sent2 && sent3 != sent4){
-      cr = 1;
-    }
-  }else{
-    double xminT, xmaxT;
-    if(t.p.x < t.q.x){
-      xminT = t.p.x;
-      xmaxT = t.q.x;
-    }else{
-      xminT = t.q.x;
-      xmaxT = t.p.x;
-    }
+ int sent3 = sentido(t.p, s.p, s.q);
+ int sent4 = sentido(t.q, s.p, s.q);
 
-		double yminT, ymaxT;
-    if(t.p.y < t.q.y){
-      yminT = t.p.y;
-      ymaxT = t.q.y;
-    }else{
-      yminT = t.q.y;
-      ymaxT = t.p.y;
-    }
+ int cr = 0;
+ if(sent1 != 0 && sent2 != 0){
+	 if(sent1 != sent2 && sent3 != sent4){
+		 cr = 1;
+	 }
+ }else{
+	 double xminT, xmaxT;
+	 if(t.p.x < t.q.x){
+		 xminT = t.p.x;
+		 xmaxT = t.q.x;
+	 }else{
+		 xminT = t.q.x;
+		 xmaxT = t.p.x;
+	 }
 
-    if(sent1 == sent2){ // as 2 retas são colineares
-      if((xminT <= s.p.x && s.p.x <= xmaxT) || (xminT <= s.q.x && s.q.x <= xmaxT)){
-        cr = 1;
-      }
-    }else{
-      ponto col; //ponto colinear de s no segmento t
+	 double yminT, ymaxT;
+	 if(t.p.y < t.q.y){
+		 yminT = t.p.y;
+		 ymaxT = t.q.y;
+	 }else{
+		 yminT = t.q.y;
+		 ymaxT = t.p.y;
+	 }
 
-      if(sent1 == 0){
-        col = s.p;
-      }else{
-        col = s.q;
-      }
+	 if(sent1 == sent2){ // as 2 retas são colineares
+		 if((xminT <= s.p.x && s.p.x <= xmaxT) || (xminT <= s.q.x && s.q.x <= xmaxT)){
+			 cr = 1;
+		 }
+	 }else{
+		 ponto col; //ponto colinear de s no segmento t
 
-      if(xminT <= col.x && col.x <= xmaxT && yminT <= col.y && col.y <= ymaxT){
-        cr = 1;
-      }
-    }
-  }
+		 if(sent1 == 0){
+			 col = s.p;
+		 }else{
+			 col = s.q;
+		 }
+
+		 if(xminT <= col.x && col.x <= xmaxT && yminT <= col.y && col.y <= ymaxT){
+			 cr = 1;
+		 }
+	 }
+ }
 
 
 
-  return cr;
+ return cr;
+
 }
 
 /*  Retorna 1 se o ponto p est ́a no interior do tri^angulo t.
@@ -235,25 +237,26 @@ ponto projeta(ponto p, segmento s){
 /*  Devolve 1 se os tri^angulos a e b se intersectam
 e devolve 0 caso contr ́ario. */
 int intersecta(triangulo a, triangulo b){
-  segmento aPQ = {a.p.x, a.p.y, a.q.x, a.q.y};
-  segmento aPR = {a.p.x, a.p.y, a.r.x, a.r.y};
-  segmento aQR = {a.q.x, a.q.y, a.r.x, a.r.y};
-  segmento bPQ = {b.p.x, a.p.y, a.q.x, a.q.y};
-  segmento bPR = {b.p.x, b.p.y, b.r.x, b.r.y};
-  segmento bQR = {b.q.x, b.q.y, b.r.x, b.r.y};
+	segmento aPQ = {a.p, a.q};
+	segmento aPR = {a.p, a.r};
+	segmento aQR = {a.q, a.r};
 
-  if(cruza(aPQ, bPQ) == 1 || cruza(aPQ, bPR) == 1 || cruza(aPQ, bQR) == 1 ){
-    return 1;
-  }
-  else if(cruza(aPR, bPQ) == 1 || cruza(aPR, bPR) == 1 || cruza(aPR, bQR) == 1){
-    return 1;
-  }
-  else if(cruza(aQR, bPQ) == 1 || cruza(aPR, bPR) == 1 || cruza(aQR, bQR) == 1){
-    return 1;
-  }
-  else{
-    return 0;
-  }
+	segmento bPQ = {b.p, b.q};
+	segmento bPR = {b.p, b.r};
+	segmento bQR = {b.q, b.r};
+
+	segmento segA[3] = {aPQ, aPR, aQR};
+	segmento segB[3] = {bPQ, bPR, bQR};
+
+  int intersec = 0;
+	int i, j;
+	for(i = 0; i < 3 && !intersec; i++){
+		for(j = 0; j < 3 && !intersec; j++){
+			intersec = cruza(segA[i], segB[j]);
+		}
+	}
+
+	return intersec;
 }
 /*
 int main(){
