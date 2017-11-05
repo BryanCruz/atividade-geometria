@@ -5,9 +5,6 @@
 #include <stdio.h>
 #include <math.h>
 
-//#ifndef GEOMETRIA
-//#define GEOMETRIA
-
 /*struct s_ponto{
   double x;
   double y;
@@ -25,6 +22,7 @@ struct s_triangulo{
 };
 typedef struct s_triangulo triangulo;
 */
+
 //  Calcula o produto interno <u,v>
 double produto_interno(vetor p, vetor q) {
 	return p.x*q.x + p.y*q.y;
@@ -213,15 +211,3 @@ int intersecta(triangulo a, triangulo b){
 
 	return intersec;
 }
-/*
-int main(){
-	segmento s1 = {{0, 2}, {-2, -2}};
-	segmento s2 = {{-2, -5}, {1, 10}};
-
-	ponto p = cruzamento(s1,s2);
-
-	printf("(%.2lf, %.2lf)\n", p.x, p.y);
-	return 0;
-}*/
-
-//#endif
