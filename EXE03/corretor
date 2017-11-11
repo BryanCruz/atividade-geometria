@@ -2,24 +2,21 @@
 #########################
 # COMPILAR
 #########################
-if [ -f *.c ]; then
-    FILE=""
-    for file in *.c
-    do
+
+FILE=""
+for file in *.c
+do
 	base="${file%%.*}"
-	gcc -c $file '-I'"$PWD/src" -o obj/$base.o 
+	gcc -c $file '-I'"$PWD/src" -o obj/$base.o
 	FILE=obj/$base.o
 	break;
-    done
-    for i in {01..11}
-    do
-	gcc -c src/main$i.c '-I'"$PWD/src" -o obj/main$i.o 
+done
+for i in {01..11}
+do
+	gcc -c src/main$i.c '-I'"$PWD/src" -o obj/main$i.o
 	gcc obj/main$i.o "$FILE" -o bin/p$i -lm
-    done
-else
-    echo "Nenhum arquivo contendo o código fonte foi encontrado no diretório $PWD"
-    exit
-fi
+done
+
 
 #########################
 # EXECUTAR TESTES
@@ -33,18 +30,18 @@ fi
     do
 	let COUNTER=COUNTER+1
         touch ./test/$f
-	./src/gen-points.py | bin/p$i > ./test/file$i 
-        DIFF=$(diff -w ./test/file$i ./out/file$i) 
+	./src/gen-points.py | bin/p$i > ./test/file$i
+        DIFF=$(diff -w ./test/file$i ./out/file$i)
         if [ "$DIFF" == "" ]; then
             let GRADE=GRADE+1
 	    echo "$COUNTER ok"
-        else 
+        else
             echo "$COUNTER incorreto ($f)"
         fi
     done
 
     # rm -rf ./test
 
-    echo -n "Nota " 
+    echo -n "Nota "
     echo -n $(echo "scale=2; $GRADE*10/$COUNTER" | bc)
     echo " ($GRADE de $COUNTER)"

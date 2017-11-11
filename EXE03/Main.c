@@ -23,39 +23,40 @@ struct s_triangulo{
 typedef struct s_triangulo triangulo;
 */
 
-//  Calcula o produto interno <u,v>
-double produto_interno(vetor p, vetor q) {
-	return p.x*q.x + p.y*q.y;
+//1  Calcula o produto interno <u,v>
+double produto_interno(vetor u, vetor v) {
+	return u.x*v.x + u.y*v.y;
 }
 
-//  Calcula o vetor p - q
-vetor subtrai(vetor p, vetor q){
+//2  Calcula o vetor u - v
+vetor subtrai(vetor u, vetor v){
 	vetor temp;
-	temp.x = p.x - q.x;
-	temp.y = p.y - q.y;
+	temp.x = u.x - v.x;
+	temp.y = u.y - v.y;
 
 	return temp;
 }
 
-/*  Calcula o vetor resultante da rotacao do vetor v
-de um angulo de 90 graus (no sentido anti-horario). */
-vetor roda90(vetor p){
-	double aux = p.y;
-	p.y = p.x;
-	p.x = -aux;
+/*3  Calcula o vetor resultante da rotacao do vetor v
+de um angulo de 90 graus no sentido anti-horario. */
+vetor roda90(vetor v){
+	double aux = v.y;
+	v.y = v.x;
+	v.x = -aux;
 
 	return p;
 }
 
-// Calcula distancia
+//4 Calcula a distância entre os pontos p e q.
  double distancia (ponto p, ponto q){
   vetor qp = subtrai(p, q);
   double dist = sqrt(pow(qp.x, 2) + pow(qp.y, 2));
   return dist;
 }
 
-/*  Retorna 1 se o coseno do ^angulo entre os vetores u e v  ́e positivo
-retorna -1 se for negativo e 0 se for nulo. */
+/*5  Retorna 1 se o coseno do ^angulo entre os vetores u e v  ́
+		 e positivo e retorna -1 se for negativo e 0 se for nulo.
+		 Se u ou v for o vetor nulo, devolve 0.*/
 int sinal_do_coseno(vetor u, vetor v){
   double pi = produto_interno(u, v);
   if(pi > 0){
@@ -72,8 +73,9 @@ double produto_vetorial(vetor u, vetor v){
   return u.x*v.y - v.x*u.y;
 }
 
-/*  Retorna 1 se p, q e r est~ao em sentido hor ́ario e -1 se for
-anti-hor ́ario. Se os pontos forem colineares devolva 0. */
+/* 6 Retorna 1 se p, q e r estão em sentido horário e -1 se for
+    anti-horário. Se os pontos forem colineares devolva 0.
+    Se dois desses pontos são iguais, devolve 0. */
 int sentido(ponto p, ponto q, ponto r){
   vetor vetorPQ = subtrai(q, p);
   vetor vetorPR = subtrai(r, p);
@@ -89,7 +91,8 @@ int sentido(ponto p, ponto q, ponto r){
 }
 
 
-//  Retorna 1 se os segmentos se cruzam e 0 caso contr ́ario.
+/* 7 Retorna 1 se os interiores dos segmentos se intersectam em
+    um único ponto e retorna 0 caso contrário. */
 int cruza(segmento s, segmento t){
 
 	int sent1 = sentido(s.p, t.p, t.q);
@@ -118,16 +121,17 @@ int cruza(segmento s, segmento t){
 	return cr;
 }
 
-/*  Retorna 1 se o ponto p est ́a no interior do tri^angulo t.
-Devolve 0 caso contr ́ario. */
+/*8 Retorna 1 se o ponto p está no interior do triângulo t
+    e retorna 0 caso contrário. */
 int dentro(ponto p, triangulo t){
   return (sentido(p, t.p, t.q) == sentido(p, t.q, t.r)) && (sentido(p, t.q, t.r) == sentido(p, t.r, t.p));
 }
 
 //  Opcional:
-/*  Devolve a cordenada do ponto em que s e t se intersecta
-caso eles se intersectam ou qualquer ponto caso eles nao
-se intersectam. */
+/*9 Devolve o ponto em que s e t se intersectam caso cruza(s, t)
+   devolva 1 (ou seja, caso s e t se intersectem em um
+   único ponto no interior dos dois segmentos) e devolve
+   o ponto {0, 0} caso contrário. */
 
 ponto cruzamento(segmento s, segmento t){
 	ponto p = {0, 0};
@@ -166,7 +170,8 @@ ponto cruzamento(segmento s, segmento t){
 }
 
 
-/*  Calcula o ponto que  ́e a proje ̧c~ao de p no segmento s. */
+/*10 Calcula o ponto que é a projeção de p na reta que
+   contém o segmento s. */
 ponto projeta(ponto p, segmento s){
   //troca de coordenadas
   vetor v_s = subtrai(s.q, s.p);
@@ -187,8 +192,8 @@ ponto projeta(ponto p, segmento s){
 
 
 
-/*  Devolve 1 se os tri^angulos a e b se intersectam
-e devolve 0 caso contr ́ario. */
+/*  Devolve 1 se o interior dos triângulos a e b se
+    intersectam e devolve 0 caso contrário. */
 int intersecta(triangulo a, triangulo b){
 	segmento aPQ = {a.p, a.q};
 	segmento aPR = {a.q, a.r};
