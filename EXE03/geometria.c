@@ -145,23 +145,12 @@ ponto cruzamento(segmento s, segmento t){
 	  ponto c = t.p;
 	  vetor d = subtrai(t.q, t.p);
 
-		if(produto_vetorial(d, b) != 0){
-			//parametro da reta s
-			double n1 = produto_vetorial(d, subtrai(c, a)) / produto_vetorial(d, b);
+		//parametro da reta s
+		double n1 = produto_vetorial(d, subtrai(c, a)) / produto_vetorial(d, b);
 
-			//substituindo n1 para encontrar o ponto:
-			p.x = a.x + n1*b.x;
-			p.y = a.y + n1*b.y;
-		}else{
-			if((s.p.x == t.p.x && s.p.y == t.p.y) || (s.p.x == t.q.x && s.p.y == t.q.y)){
-				p.x = s.p.x;
-				p.y = s.p.y;
-			}else if((s.q.x == t.p.x && s.q.y == t.p.y) || (s.q.x == t.q.x && s.q.y == t.q.y)){
-				p.x = s.q.x;
-				p.y = s.q.y;
-			}
-		}
-
+		//substituindo n1 para encontrar o ponto:
+		p.x = a.x + n1*b.x;
+		p.y = a.y + n1*b.y;
 	}
 
   return p;
@@ -183,7 +172,7 @@ ponto projeta(ponto p, segmento s){
   double alpha = produto_interno(p, v_s)/produto_interno(v_s, v_s);
 
   //corrige novamente para voltar às coordenadas originais
-  ponto proj = {alpha*(v_s.x), alpha*(v_s.y)};
+  ponto proj = {p.x + alpha*(v_s.x), p.y + alpha*(v_s.y)};
   return proj;
 }
 
