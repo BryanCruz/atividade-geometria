@@ -172,7 +172,7 @@ ponto projeta(ponto p, segmento s){
   double alpha = produto_interno(p, v_s)/produto_interno(v_s, v_s);
 
   //corrige novamente para voltar às coordenadas originais
-  ponto proj = {p.x + alpha*(v_s.x), p.y + alpha*(v_s.y)};
+  ponto proj = {s.p.x + alpha*(v_s.x), s.p.y + alpha*(v_s.y)};
   return proj;
 }
 
